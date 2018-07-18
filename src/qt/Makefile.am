@@ -305,15 +305,10 @@ RES_IMAGES = \
   res/images/drkblue_rightArrow_small.png \
   res/images/drkblue_qtreeview_selected.png \
   res/images/methuselah_main_hg.png \
-  res/images/methuselah_theme1_hg.png \
-  res/images/methuselah_theme2_hg.png \
-  res/images/methuselah_theme3_hg.png
+  res/images/methuselah-tree.png
 
 RES_CSS = \
-  res/css/methuselah_main.css \
-  res/css/methuselah_theme1.css \
-  res/css/methuselah_theme2.css \
-  res/css/methuselah_theme3.css 
+  res/css/default.css 
   
 RES_MOVIES = $(wildcard res/movies/spinner-*.png)
 

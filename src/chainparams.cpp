@@ -168,7 +168,8 @@ public:
 
         checkpointData = (CCheckpointData) {
             {
-                {     0, uint256S("00000de5cd174557ab559bb00ec27e1d0a323ea11fa1afd9d76d5e6f552cffb9")}
+                {     0, uint256S("00000de5cd174557ab559bb00ec27e1d0a323ea11fa1afd9d76d5e6f552cffb9")},
+                { 50900, uint256S("0000000000764b9d957d88a6307e7d87f083d102e23f3bd80458c53523631926")}
             }
         };
 
@@ -189,9 +190,9 @@ public:
         //     (the tx=... number in the SetBestChain debug.log lines)
         // [3] estimated number of transactions per second after that timestamp
         chainTxData = ChainTxData{
-            0,
-            0,
-            0
+            1531078381,
+            57241,
+            1
         };
     }
 };
@@ -218,8 +219,8 @@ public:
         consensus.nPowMaxAdjustDown = 31; // Zawy adjustment: (1 - 1/0.765)x100 (0.765 = v1b)
         consensus.nPowMaxAdjustUp = 23.7; // Zawy adjustment: 1- 1/(1+.31)x100 = 23.7
 
-        consensus.nPowTargetTimespan = 10; // 10 seconds
-        consensus.nPowTargetSpacing = 10; // 10 seconds 
+        consensus.nPowTargetTimespan = 5; // 5 seconds
+        consensus.nPowTargetSpacing = 5; // 5 seconds 
 
         consensus.fPowD601SwitchHeight = 30;
 
@@ -264,7 +265,7 @@ public:
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0");
 
-        consensus.MasternodePaymentStartHeight = 1921;
+        consensus.MasternodePaymentStartHeight = 250;
 
         pchMessageStart[0] = 0xba;
         pchMessageStart[1] = 0xbb;
@@ -281,8 +282,8 @@ public:
 
         // vSeeds.push_back(CDNSSeedData("methuselahcoin.io", "test-seed1.methuselahcoin.io"));
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
-        vFixedSeeds.clear(); // [hetus] TODO: remove
-        vSeeds.clear(); // [hetus] TODO: remove
+        vFixedSeeds.clear(); // [methuse] TODO: remove
+        vSeeds.clear(); // [methuse] TODO: remove
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,110); // m
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,128); // t

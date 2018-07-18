@@ -93,11 +93,19 @@ bool IsSporkActive(int nSporkID)
         if(nSporkID == SPORK_2_INSTANTX) r = SPORK_2_INSTANTX_DEFAULT;
         if(nSporkID == SPORK_3_INSTANTX_BLOCK_FILTERING) r = SPORK_3_INSTANTX_BLOCK_FILTERING_DEFAULT;
         if(nSporkID == SPORK_5_MAX_VALUE) r = SPORK_5_MAX_VALUE_DEFAULT;
-        if(nSporkID == SPORK_7_MASTERNODE_SCANNING) r = SPORK_7_MASTERNODE_SCANNING;
+        if(nSporkID == SPORK_7_MASTERNODE_SCANNING) r = SPORK_7_MASTERNODE_SCANNING_DEFAULT;
+        if(nSporkID == SPORK_8_LOCKDOWN) r = SPORK_8_LOCKDOWN_DEFAULT;
+        if(nSporkID == SPORK_9_ACTIVE_PROTOCOL) r = SPORK_9_ACTIVE_PROTOCOL_DEFAULT;
 
         if(r == 0) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
     }
     if(r == 0) r = 4070908800; //return 2099-1-1 by default
+
+    // Special case for spork 8 to allow for blocks beyond current
+    // date if needed.
+    if (nSporkID == SPORK_8_LOCKDOWN && r > 0 && r != 4070908800) {
+        return true;
+    }
 
     return r < GetTime();
 }
@@ -114,7 +122,9 @@ int GetSporkValue(int nSporkID)
         if(nSporkID == SPORK_2_INSTANTX) r = SPORK_2_INSTANTX_DEFAULT;
         if(nSporkID == SPORK_3_INSTANTX_BLOCK_FILTERING) r = SPORK_3_INSTANTX_BLOCK_FILTERING_DEFAULT;
         if(nSporkID == SPORK_5_MAX_VALUE) r = SPORK_5_MAX_VALUE_DEFAULT;
-        if(nSporkID == SPORK_7_MASTERNODE_SCANNING) r = SPORK_7_MASTERNODE_SCANNING;
+        if(nSporkID == SPORK_7_MASTERNODE_SCANNING) r = SPORK_7_MASTERNODE_SCANNING_DEFAULT;
+        if(nSporkID == SPORK_8_LOCKDOWN) r = SPORK_8_LOCKDOWN_DEFAULT;
+        if(nSporkID == SPORK_9_ACTIVE_PROTOCOL) r = SPORK_9_ACTIVE_PROTOCOL_DEFAULT;
 
         if(r == 0) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
     }
@@ -244,6 +254,8 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if(strName == "SPORK_3_INSTANTX_BLOCK_FILTERING") return SPORK_3_INSTANTX_BLOCK_FILTERING;
     if(strName == "SPORK_5_MAX_VALUE") return SPORK_5_MAX_VALUE;
     if(strName == "SPORK_7_MASTERNODE_SCANNING") return SPORK_7_MASTERNODE_SCANNING;
+    if(strName == "SPORK_8_LOCKDOWN") return SPORK_8_LOCKDOWN;
+    if(strName == "SPORK_9_ACTIVE_PROTOCOL") return SPORK_9_ACTIVE_PROTOCOL;
 
     return -1;
 }
@@ -255,6 +267,8 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if(id == SPORK_3_INSTANTX_BLOCK_FILTERING) return "SPORK_3_INSTANTX_BLOCK_FILTERING";
     if(id == SPORK_5_MAX_VALUE) return "SPORK_5_MAX_VALUE";
     if(id == SPORK_7_MASTERNODE_SCANNING) return "SPORK_7_MASTERNODE_SCANNING";
+    if(id == SPORK_8_LOCKDOWN) return "SPORK_8_LOCKDOWN";
+    if(id == SPORK_9_ACTIVE_PROTOCOL) return "SPORK_9_ACTIVE_PROTOCOL";
 
     return "Unknown";
 }

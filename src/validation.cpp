@@ -1375,7 +1375,7 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, const Consensus::P
 
     CAmount amount = blockValue * 0.5;
     
-    if (nHeight >= 1921 && nHeight <= 8960)
+    if (nHeight >= consensusParams.MasternodePaymentStartHeight && nHeight <= 8960)
         amount = blockValue * 0.3;
     else if (nHeight >= 8961 && nHeight <= 17920)
         amount = blockValue * 0.4;
@@ -3275,7 +3275,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (chainActive.Tip() != NULL) {
         MasternodePayments = chainActive.Tip()->nHeight >= consensusParams.MasternodePaymentStartHeight;
     }
-
+ 
     if(MasternodePayments) {
         LOCK2(cs_main, mempool.cs);
 
@@ -3283,58 +3283,93 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
         if(pindex != NULL) {
             if(pindex->GetBlockHash() == block.hashPrevBlock) {
-                CAmount tVal = GetBlockSubsidy(pindex->nHeight+1, consensusParams) * 0.05;
-                CAmount nValue = block.vtx[0]->GetValueOut() - tVal;
-                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, nValue, consensusParams);
-
                 // If we don't already have its previous block, skip masternode payment step
                 if (!IsInitialBlockDownload())
                 {
+                    CAmount tVal = GetBlockSubsidy(pindex->nHeight+1, consensusParams) * 0.05;
+                    CAmount nValue = block.vtx[0]->GetValueOut() - tVal;
+                    CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, nValue, consensusParams);
+
+                    int lockdownHeight = GetSporkValue(SPORK_8_LOCKDOWN);
+                    bool isLockdown = IsSporkActive(SPORK_8_LOCKDOWN) && (pindex->nHeight+1) >= lockdownHeight;
+
+                    // [methuse] FIX: if lockdown spork is active adjust amounts.
+                    if (isLockdown) {
+                        tVal = 0;
+                        nValue = block.vtx[0]->GetValueOut();
+                        masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, nValue, consensusParams);
+                    }
+
                     bool foundPaymentAmount = false;
                     bool foundPayee = false;
                     bool foundPaymentAndPayee = false;
 
                     CScript payee;
-
-                    if(!masternodePayments.GetBlockPayee(chainActive.Tip()->nHeight+1, payee)
-                            || payee == CScript()) {
-
+                    bool foundMasternodePayee = masternodePayments.GetBlockPayee(pindex->nHeight+1, payee);
+                    if (!foundMasternodePayee || payee == CScript()) {
+                        foundMasternodePayee = false;
                         foundPayee = true; //doesn't require a specific payee
-                        foundPaymentAmount = true;
-                        foundPaymentAndPayee = true;
 
-                        if(fDebug) LogPrintf("CheckBlock() : non-specific masternode payments %d\n", chainActive.Tip()->nHeight+1);
+                        // If not in lockdown then allow for no masternode payments.
+                        if (!isLockdown) {
+                            foundPaymentAmount = true;
+                            foundPaymentAndPayee = true;
+                        }
+
+                        if(fDebug) LogPrintf("CheckBlock() : non-specific masternode payments %d\n", pindex->nHeight+1);
                     }
 
                     const CTransaction &tx = *(block.vtx[0]);
-
                     BOOST_FOREACH(const CTxOut& output, tx.vout) {
                         //REV1 allows for continuous mn payments - not a discrete function
-                        if (output.scriptPubKey == payee &&
-                                output.nValue <= nValue * 0.6) {
+                        // [methuse] FIX: is not in lockdown then allow incorrect check to
+                        // allow for backwards compatability. 
+                        if (!isLockdown && output.scriptPubKey == payee && output.nValue <= nValue * 0.6) {
                             foundPaymentAndPayee = true;
                             break;
                         }
 
-                        if (output.nValue == masternodePaymentAmount) {
-                            CTxDestination address1;
-                            ExtractDestination(output.scriptPubKey, address1);
-                            CMethuselahAddress address2(address1);
-
-                            if(fDebug) LogPrintf("CheckBlock() : found payment[%d|%d] or payee[%d|%s] nHeight %d. \n", true, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
-
-                            foundPaymentAmount = true;
-                        }
-
                         if (output.scriptPubKey == payee)
                             foundPayee = true;
+
+                        // Make sure that at least 1 vout value equals masternode payment
+                        // amount and make sure that it matches payee.
+                        if (output.nValue == masternodePaymentAmount) {
+                            foundPaymentAmount = true;
+
+                            if(fDebug) {
+                                CTxDestination address1;
+                                ExtractDestination(output.scriptPubKey, address1);
+                                CMethuselahAddress address2(address1);
+
+                                LogPrintf("CheckBlock() : found payment[%d|%d] or payee[%d|%s] nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), pindex->nHeight+1);
+                            }
+                        }
                     }
 
                     CTxDestination address1;
                     ExtractDestination(payee, address1);
                     CMethuselahAddress address2(address1);
 
+                    // If in lockdown then make sure there are two payments that include
+                    // miner and masternode rewards.
+                    if (isLockdown && tx.vout.size() < 2) {
+                        return state.DoS(100, error("CheckBlock() : coinbase transaction should have at least 2 outputs, size %d\n", tx.vout.size()));
+                    }
+
+                    // [methuse] FIX: if amount and payee are found update flag.
+                    if (foundPayee && foundPaymentAmount)
+                        foundPaymentAndPayee = true;
+
                     if(!foundPaymentAndPayee) {
+                        if (fDebug) {
+                            BOOST_FOREACH(const CTxOut& output, tx.vout) {
+                                CTxDestination addr1;
+                                ExtractDestination(output.scriptPubKey, addr1);
+                                CMethuselahAddress addr2(addr1);
+                                LogPrintf("\tHeight: %d Value: %d output.scriptPubKey: %s payee: %s\n", chainActive.Tip()->nHeight+1, output.nValue, addr2.ToString().c_str(), address2.ToString().c_str());
+                            }
+                        }
                         LogPrintf("CheckBlock() : *** CheckBlock() : couldn't find masternode payment[%d|%d] or payee[%d|%s] nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
                         return state.DoS(100, error("CheckBlock() : couldn't find masternode payment or payee"));//todo++
                     } else {
