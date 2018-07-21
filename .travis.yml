@@ -1,5 +1,5 @@
 os: osx
-osx_image: xcode8.3
+osx_image: xcode9.3
 language: cpp
 compiler: gcc
 env:
@@ -10,7 +10,7 @@ before_install:
 - brew update
 - brew unlink boost python
 - brew bundle
-- brew link boost@1.57 --force
+- brew link boost@1.67 --force
 script:
 - "./autogen.sh"
 - "./configure"
@@ -18,7 +18,7 @@ script:
 before_deploy:
 - git config --local user.name "methuselahdev"
 - git config --local user.email "methuselahdev@gmail.com"
-- git tag "methuselah-1.1.0.2"
+- git tag "v1.1.0.4"
 - echo `pwd`
 deploy:
   provider: releases

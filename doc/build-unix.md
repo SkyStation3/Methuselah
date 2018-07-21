@@ -46,6 +46,19 @@ Licenses of statically linked libraries:
 
 - For the versions used in the release, see doc/release-process.md under *Fetch and build inputs*.
 
+Quick install:
+```bash
+sudo apt-get update -y && \
+sudo apt-get install -y build-essential libtool libtool-bin && \
+sudo apt-get install -y autotools-dev autoconf automake libssl-dev libevent-dev && \
+sudo apt-get install -y libboost-all-dev pkg-config libminiupnpc-dev libqrencode-dev && \
+sudo apt-get install -y libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools && \
+sudo apt-get install -y libprotobuf-dev protobuf-compiler && \
+sudo add-apt-repository -y ppa:bitcoin/bitcoin && \
+sudo apt-get update -y && \
+sudo apt-get install -y libdb4.8-dev libdb4.8++-dev
+```
+
 System requirements
 --------------------
 
@@ -58,7 +71,7 @@ Dependency Build Instructions: Ubuntu & Debian
 Build requirements:
 
 	sudo apt-get install build-essential
-	sudo apt-get install libtool autotools-dev autoconf automake
+	sudo apt-get install libtool libtool-bin autotools-dev autoconf automake
 	sudo apt-get install libssl-dev libevent-dev
 
 for Ubuntu 12.04 and later:
@@ -110,9 +123,7 @@ To build with Qt 4 you need the following:
 
 For Qt 5 you need the following:
 
-    sudo apt-get install libqt5gui5 libqt5core5 libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev
-
-_Note: If building for Ubuntu 18+ please replace `libqt5core5` with `libqt5core5a`._
+    sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
 
 libqrencode (optional) can be installed with:
 
@@ -168,6 +179,12 @@ cd $METHUSELAH_ROOT
 
 Boost
 -----
+Check the current verion: 
+- In terminal run: `echo -e '#include <boost/version.hpp>\nBOOST_VERSION' | gcc -x c++ -E -`
+- Should return a number like `106700` or `105800` for example.
+- The recommended Boost version is `106700` aka `1_67_0` aka `1.67.0`.
+
+
 If you need to build Boost yourself:
 
 	sudo su
