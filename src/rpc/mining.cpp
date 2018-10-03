@@ -1062,7 +1062,7 @@ UniValue getblocksubsidy(const JSONRPCRequest& request)
 
 UniValue masternodelist(const JSONRPCRequest& request)
 {
-    std::string strMode = "status";
+    std::string strMode = "common";
     std::string strFilter = "";
 
     if (request.params.size() >= 1) strMode = request.params[0].get_str();
@@ -1070,7 +1070,7 @@ UniValue masternodelist(const JSONRPCRequest& request)
 
     if (request.fHelp ||
             (strMode != "status" && strMode != "vin" && strMode != "pubkey" && strMode != "lastseen" && strMode != "activeseconds" && strMode != "rank"
-             && strMode != "protocol" && strMode != "full" && strMode != "votes" && strMode != "donation" && strMode != "pose"))
+             && strMode != "protocol" && strMode != "full" && strMode != "votes" && strMode != "donation" && strMode != "pose" && strMode != "common"))
     {
         throw runtime_error(
             "masternodelist ( \"mode\" \"filter\" )\n"
@@ -1080,6 +1080,7 @@ UniValue masternodelist(const JSONRPCRequest& request)
             "2. \"filter\"    (string, optional) Filter results. Partial match by IP by default in all modes, additional matches in some modes\n"
             "\nAvailable modes:\n"
             "  activeseconds  - Print number of seconds masternode recognized by the network as enabled\n"
+            "  common         - Show masternode list in the most common format\n"
             "  donation       - Show donation settings\n"
             "  full           - Print info in format 'status protocol pubkey vin lastseen activeseconds' (can be additionally filtered, partial match)\n"
             "  lastseen       - Print timestamp of when a masternode was last seen on the network\n"
@@ -1102,6 +1103,30 @@ UniValue masternodelist(const JSONRPCRequest& request)
             if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
             obj.push_back(Pair(strAddr,       s.first));
         }
+    } else if (strMode == "common") {
+        UniValue mns(UniValue::VARR);
+        std::vector<CMasternode> vMasternodes = mnodeman.GetFullMasternodeVector();
+        BOOST_FOREACH(CMasternode &mn, vMasternodes) {
+            UniValue o(UniValue::VOBJ);
+
+            CScript pubkey;
+            pubkey = GetScriptForDestination(mn.pubkey.GetID());
+            CTxDestination address1;
+            ExtractDestination(pubkey, address1);
+            CMethuselahAddress address2(address1);
+            
+            o.push_back(Pair("ip", mn.addr.ToString()));
+            o.push_back(Pair("txhash", mn.vin.prevout.hash.ToString()));
+            o.push_back(Pair("outidx", (int)mn.vin.prevout.n));
+            o.push_back(Pair("status", mn.Status()));
+            o.push_back(Pair("addr", address2.ToString()));
+            o.push_back(Pair("version", mn.protocolVersion));
+            o.push_back(Pair("lastseen", mn.lastTimeSeen));
+            o.push_back(Pair("lastpaid", masternodePayments.LastPayment(mn)));
+
+            mns.push_back(o);
+        }
+        return mns;
     } else {
         std::vector<CMasternode> vMasternodes = mnodeman.GetFullMasternodeVector();
         BOOST_FOREACH(CMasternode& mn, vMasternodes) {
