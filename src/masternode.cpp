@@ -452,8 +452,8 @@ int CMasternodePayments::LastPayment(CMasternode& mn)
     int ret = mn.GetMasternodeInputAge();
 
     BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning){
-        if(winner.vin == mn.vin && chainActive.Tip()->nHeight - winner.nBlockHeight < ret)
-            ret = chainActive.Tip()->nHeight - winner.nBlockHeight;
+        if(winner.vin == mn.vin && chainActive.Tip()->nHeight - winner.nBlockHeight < ret) 
+	    return chainActive.Tip()->GetBlockTime() - chainActive[winner.nBlockHeight]->GetBlockTime();
     }
 
     return ret;
