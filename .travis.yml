@@ -13,7 +13,7 @@ before_install:
 - brew bundle
 script:
 - "./autogen.sh"
-- "./configure"
+- "./configure --disable-tests"
 - make deploy
 before_deploy:
 - git config --local user.name "methuselahdev"
