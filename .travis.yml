@@ -4,21 +4,21 @@ language: cpp
 compiler: gcc
 env:
   global:
-  - LDFLAGS=-L/usr/local/opt/openssl/lib
-  - CPPFLAGS=-I/usr/local/opt/openssl/include
+  - LDFLAGS="-L/usr/local/opt/openssl/lib"
+  - CPPFLAGS="-I/usr/local/opt/openssl/include"
+  - PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 before_install:
 - brew update
-- brew unlink boost python
+- brew unlink python
 - brew bundle
-- brew link boost@1.67 --force
 script:
 - "./autogen.sh"
-- "./configure"
+- "./configure --disable-tests"
 - make deploy
 before_deploy:
 - git config --local user.name "methuselahdev"
 - git config --local user.email "methuselahdev@gmail.com"
-- git tag "v1.1.0.4"
+- git tag "v1.2.0.0"
 - echo `pwd`
 deploy:
   provider: releases

@@ -11,7 +11,7 @@ __________________________________________________________________________
 
 ### Coin Specifications
 
-- Ticker: MTS
+- Ticker: SAP
 - Algorithm: Lyra2rev2
 - RPC Port: 7556
 - P2P Port: 7555
@@ -20,8 +20,8 @@ __________________________________________________________________________
 - Block Size: 2MB (adjustable)
 - Mined/Minted Maturity: 100 Blocks (~225 Minutes)
 - Confirmation: 6 Blocks (~13.5 Minutes)
-- Circulation (1 Year): 17,519,775 MTS
-- Circulation (5 Years): 30,659,756 MTS
+- Circulation (1 Year): 17,519,775 SAP
+- Circulation (5 Years): 30,659,756 SAP
 - PoW Period: Indefinite
 - Maximum supply: 150,000,000
 - Protocol Support: IPV4, IPV6, TOR
@@ -64,9 +64,9 @@ __________________________________________________________________________
 
 - **Methuse - Lead Developer, Wizard**
 - **Jooky - Marketing, Community Management**
-- **Theweakshall - Automation,  Development**
-- **Protoxylem - Project Management**
 - **Ren - Developer, Systems Engineer**
+- **Theweakshall - Automation,  Development**
+- **Protoxylem - Project Advisor**
 
 __________________________________________________________________________
 

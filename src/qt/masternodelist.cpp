@@ -353,7 +353,7 @@ void MasternodeList::on_startAllButton_clicked()
 
     if (retval != QMessageBox::Yes) return;
 
-    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
+    //WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
     /*if (encStatus == walletModel->Locked) {
         WalletModel::UnlockContext ctx(walletModel->requestUnlock());

@@ -3,7 +3,7 @@
 #################
 rpcuser=umethuselah
 rpcpassword=YOUR_SUPER_SECRET_PASSWORD
-rpcport=7574
+rpcport=7556
 rpcallowip=127.0.0.1
 server=1
 daemon=1

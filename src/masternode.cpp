@@ -445,6 +445,21 @@ void CMasternodePayments::CleanPaymentList()
     }
 }
 
+int CMasternodePayments::LastPayment(CMasternode& mn)
+{
+    if(chainActive.Tip() == NULL) return 0;
+
+    int ret = mn.GetMasternodeInputAge();
+
+    BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning) {
+        if (winner.vin == mn.vin && (chainActive.Tip()->nHeight - winner.nBlockHeight) < ret) {
+            return chainActive[winner.nBlockHeight]->GetBlockTime();
+        }
+    }
+
+    return chainActive[chainActive.Tip()->nHeight - mn.GetMasternodeInputAge()]->GetBlockTime();
+}
+
 bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 {
     LOCK(cs_masternodepayments);
