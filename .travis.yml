@@ -10,7 +10,7 @@ before_install:
 - brew update
 - brew unlink boost python
 - brew bundle
-- brew link boost@1.67 --force
+- brew link boost --force
 script:
 - "./autogen.sh"
 - "./configure"
