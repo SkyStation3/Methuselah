@@ -64,9 +64,9 @@ __________________________________________________________________________
 
 - **Methuse - Lead Developer, Wizard**
 - **Jooky - Marketing, Community Management**
-- **Theweakshall - Automation,  Development**
-- **Protoxylem - Project Management**
 - **Ren - Developer, Systems Engineer**
+- **Theweakshall - Automation,  Development**
+- **Protoxylem - Project Advisor**
 
 __________________________________________________________________________
 
