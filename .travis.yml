@@ -4,13 +4,13 @@ language: cpp
 compiler: gcc
 env:
   global:
-  - LDFLAGS=-L/usr/local/opt/openssl/lib
-  - CPPFLAGS=-I/usr/local/opt/openssl/include
+  - LDFLAGS="-L/usr/local/opt/openssl/lib"
+  - CPPFLAGS="-I/usr/local/opt/openssl/include"
+  - PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 before_install:
 - brew update
-- brew unlink boost python
+- brew unlink python
 - brew bundle
-- brew link boost --force
 script:
 - "./autogen.sh"
 - "./configure"
