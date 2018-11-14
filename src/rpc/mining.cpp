@@ -1105,8 +1105,9 @@ UniValue masternodelist(const JSONRPCRequest& request)
         }
     } else if (strMode == "common") {
         UniValue mns(UniValue::VARR);
-        std::vector<CMasternode> vMasternodes = mnodeman.GetFullMasternodeVector();
-        BOOST_FOREACH(CMasternode &mn, vMasternodes) {
+        std::vector<pair<int, CMasternode> > vMasternodeRanks = mnodeman.GetMasternodeRanks(chainActive.Tip()->nHeight, ActiveProtocol());
+        BOOST_FOREACH(PAIRTYPE(int, CMasternode)& s, vMasternodeRanks) {
+            CMasternode mn = s.second;
             UniValue o(UniValue::VOBJ);
 
             CScript pubkey;
@@ -1114,14 +1115,25 @@ UniValue masternodelist(const JSONRPCRequest& request)
             CTxDestination address1;
             ExtractDestination(pubkey, address1);
             CMethuselahAddress address2(address1);
+
+            std::string sAddr = address2.ToString();
+            std::string sIP = mn.addr.ToString();
+            std::string sTXID = mn.vin.prevout.hash.ToString();
+            // If filter is provided then search the pubkey, ip/net addr., and txid for a match.
+            if (strFilter != "" && sAddr.find(strFilter) == string::npos && sIP.find(strFilter) == string::npos && sTXID.find(strFilter) == string::npos) {
+                continue;
+            }
             
-            o.push_back(Pair("ip", mn.addr.ToString()));
-            o.push_back(Pair("txhash", mn.vin.prevout.hash.ToString()));
+            o.push_back(Pair("rank", mnodeman.GetMasternodeRank(mn.vin, chainActive.Tip()->nHeight, ActiveProtocol(), false)));
+            o.push_back(Pair("network", GetNetworkName(mn.addr.GetNetwork())));
+            o.push_back(Pair("ip", sIP));
+            o.push_back(Pair("txhash", sTXID));
             o.push_back(Pair("outidx", (int)mn.vin.prevout.n));
             o.push_back(Pair("status", mn.Status()));
-            o.push_back(Pair("addr", address2.ToString()));
+            o.push_back(Pair("addr", sAddr));
             o.push_back(Pair("version", mn.protocolVersion));
             o.push_back(Pair("lastseen", mn.lastTimeSeen));
+            o.push_back(Pair("activetime", (int64_t)(mn.lastTimeSeen - mn.sigTime)));
             o.push_back(Pair("lastpaid", masternodePayments.LastPayment(mn)));
 
             mns.push_back(o);
@@ -1803,6 +1815,9 @@ UniValue masternode(const JSONRPCRequest& request)
     {
         JSONRPCRequest xreq(request);
         UniValue params(UniValue::VARR);
+
+        // Default to common.
+        params.push_back("common");
 
         if(request.params.size() > 0)  {
             for (unsigned int idx = 1; idx < request.params.size(); ++idx) 
