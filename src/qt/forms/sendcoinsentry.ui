@@ -169,6 +169,9 @@
       </item>
       <item>
        <widget class="QCheckBox" name="checkboxSubtractFeeFromAmount">
+        <property name="leftMargin">
+          <number>8</number>
+        </property>
         <property name="toolTip">
          <string>The fee will be deducted from the amount being sent. The recipient will receive less METHUSELAH than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</string>
         </property>

@@ -196,11 +196,11 @@ RES_ICONS = \
   res/icons/clock4.png \
   res/icons/clock5.png \
   res/icons/configure.png \
-  res/icons/connect0_16.png \
-  res/icons/connect1_16.png \
-  res/icons/connect2_16.png \
-  res/icons/connect3_16.png \
-  res/icons/connect4_16.png \
+  res/icons/connect0.png \
+  res/icons/connect1.png \
+  res/icons/connect2.png \
+  res/icons/connect3.png \
+  res/icons/connect4.png \
   res/icons/debugwindow.png \
   res/icons/edit.png \
   res/icons/editcopy.png \
@@ -298,14 +298,13 @@ RES_IMAGES = \
   res/images/splash_testnet.png \
   res/images/paper_wallet.png \
   res/images/methuselah_logo_horizontal.png \
-  res/images/drkblue_downArrow.png \
-  res/images/drkblue_downArrow_small.png \
-  res/images/drkblue_upArrow_small.png \
-  res/images/drkblue_leftArrow_small.png \
-  res/images/drkblue_rightArrow_small.png \
+  res/images/down_arrow.png \
+  res/images/down_arrow_small.png \
+  res/images/up_arrow_small.png \
+  res/images/left_arrow_small.png \
+  res/images/right_arrow_small.png \
   res/images/drkblue_qtreeview_selected.png \
-  res/images/methuselah_main_hg.png \
-  res/images/methuselah-tree.png
+  res/images/methuselah_main_hg.png
 
 RES_CSS = \
   res/css/default.css 
