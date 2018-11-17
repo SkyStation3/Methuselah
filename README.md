@@ -42,7 +42,7 @@ Start Block | End Block | Share (PoW / Masternode) |
 | 2 | 233,600 | 75 | 17,519,775 |
 | 233,601 | 467,201 | 37.5 | 26,279,775 |
 | 467,202 | 700,801 | 18.75 | 30,659,756 |
-| 700,802 | Indefinitely | 10 | Until 150,000,000 |
+| 700,802 | Indefinitely | 10 | 150,000,000+ |
 
 
 __________________________________________________________________________
@@ -50,6 +50,7 @@ __________________________________________________________________________
 
 ### Links
 
+- **[Methuselah Blog](https://methuselah-coin.github.io/blog)**
 - **[Methuselah Discord](https://discord.gg/4p5muhb)**
 - **[Methuselah Explorer](https://explorer.methuselahcoin.io)**
 - **[Methuselah Facebook](https://www.facebook.com/MethuselahCoin)**
