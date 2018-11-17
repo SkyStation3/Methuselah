@@ -794,9 +794,9 @@ void MethuselahGUI::updateNetworkState()
 		switch(count)
 		{
 		case 0: icon = ":/icons/connect_0_16"; break;
-		case 1: case 2: case 3: icon = ":/icons/connect_1_16"; break;
-		case 4: case 5: case 6: icon = ":/icons/connect_2_16"; break;
-		case 7: case 8: case 9: icon = ":/icons/connect_3_16"; break;
+		case 1: case 2: case 3: icon = ":/icons/connect_1"; break;
+		case 4: case 5: case 6: icon = ":/icons/connect_2"; break;
+		case 7: case 8: case 9: icon = ":/icons/connect_3"; break;
 		default: icon = ":/icons/connect_4_16"; break;
 		}
 	} else {
