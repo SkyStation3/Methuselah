@@ -438,10 +438,10 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
         {
         QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(wtx->address));
         if(label.isEmpty())
-            return COLOR_BAREADDRESS;
+            return COLOR_WHITE;
         } break;
     case TransactionRecord::SendToSelf:
-        return COLOR_BAREADDRESS;
+        return COLOR_WHITE;
     default:
         break;
     }
@@ -467,9 +467,9 @@ QVariant TransactionTableModel::txStatusDecoration(const TransactionRecord *wtx)
     {
     case TransactionStatus::OpenUntilBlock:
     case TransactionStatus::OpenUntilDate:
-        return COLOR_TX_STATUS_OPENUNTILDATE;
+        return COLOR_WHITE;
     case TransactionStatus::Offline:
-        return COLOR_TX_STATUS_OFFLINE;
+        return COLOR_WHITE;
     case TransactionStatus::Unconfirmed:
         return QIcon(":/icons/transaction_0");
     case TransactionStatus::Abandoned:
@@ -496,7 +496,7 @@ QVariant TransactionTableModel::txStatusDecoration(const TransactionRecord *wtx)
     case TransactionStatus::NotAccepted:
         return QIcon(":/icons/transaction_0");
     default:
-        return COLOR_BLACK;
+        return COLOR_WHITE;
     }
 }
 
@@ -587,7 +587,7 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
         // Non-confirmed (but not immature) as transactions are grey
         if(!rec->status.countsForBalance && rec->status.status != TransactionStatus::Immature)
         {
-            return COLOR_UNCONFIRMED;
+            return COLOR_WHITE;
         }
         if(index.column() == Amount && (rec->credit+rec->debit) < 0)
         {

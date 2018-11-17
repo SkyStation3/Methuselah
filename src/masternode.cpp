@@ -296,7 +296,7 @@ void CMasternode::Check()
 
         if(!AcceptableInputs(mempool, state, MakeTransactionRef(mtx))) {
             activeState = MASTERNODE_VIN_SPENT;
-            LogPrintf("tx failed to get accepted on mempool");
+            LogPrintf("tx failed to get accepted on mempool\n");
             return;
         }
 
